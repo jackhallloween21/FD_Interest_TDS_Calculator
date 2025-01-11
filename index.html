@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Previous head and style sections remain exactly the same -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FD Calculator</title>
     <style>
+        /* All previous styles remain exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -100,7 +102,7 @@
 
         .yearly-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
@@ -114,6 +116,10 @@
 
         .year-card:hover {
             transform: translateY(-5px);
+        }
+
+        .year-card p {
+            margin: 0.5rem 0;
         }
 
         .total-summary {
@@ -164,12 +170,12 @@
         <div class="input-section">
             <div class="input-group">
                 <label for="principal">Principal Amount (₹)</label>
-                <input type="number" id="principal" min="0" value="100000">
+                <input type="number" id="principal" min="0" value="500000">
             </div>
             
             <div class="input-group">
                 <label for="rate">Interest Rate (%)</label>
-                <input type="number" id="rate" min="0" step="0.01" value="5">
+                <input type="number" id="rate" min="0" step="0.01" value="7">
             </div>
             
             <div class="input-group">
@@ -177,7 +183,7 @@
                 <div class="duration-group">
                     <div class="duration-label">
                         <span>Years:</span>
-                        <input type="number" id="years" min="0" value="1">
+                        <input type="number" id="years" min="0" value="5">
                     </div>
                     <div class="duration-label">
                         <span>Months:</span>
@@ -226,34 +232,43 @@
             let yearlyDetailsHTML = '';
             let totalInterest = 0;
             let totalTDS = 0;
+            let currentPrincipal = principal;
 
             // Calculate for each year
             for (let year = 1; year <= Math.ceil(totalYears); year++) {
                 const yearFraction = year <= Math.floor(totalYears) ? 1 : 
                     totalYears - Math.floor(totalYears);
                 
-                const yearlyInterest = (principal * rate * yearFraction) / 100;
+                const yearlyInterest = (currentPrincipal * rate * yearFraction) / 100;
                 
                 // Calculate TDS
                 const tdsThreshold = isSeniorCitizen ? 50000 : 40000;
-                const tdsRate = isPanLinked ? 0.1 : 0.2;
-                const yearlyTDS = yearlyInterest > tdsThreshold ? 
-                    yearlyInterest * tdsRate : 0;
+                let tdsAmount = 0;
+                
+                if (yearlyInterest > tdsThreshold) {
+                    const tdsRate = isPanLinked ? 0.10 : 0.20;
+                    tdsAmount = yearlyInterest * tdsRate;
+                }
 
                 totalInterest += yearlyInterest;
-                totalTDS += yearlyTDS;
+                totalTDS += tdsAmount;
 
                 yearlyDetailsHTML += `
                     <div class="year-card">
                         <h3>Year ${year}</h3>
-                        <p>Interest: ₹${yearlyInterest.toFixed(2)}</p>
-                        <p>TDS: ₹${yearlyTDS.toFixed(2)}</p>
-                        <p>Net Interest: ₹${(yearlyInterest - yearlyTDS).toFixed(2)}</p>
+                        <p>Starting Amount: ₹${currentPrincipal.toFixed(2)}</p>
+                        <p>Interest Earned: ₹${yearlyInterest.toFixed(2)}</p>
+                        <p>TDS Deducted: ₹${tdsAmount.toFixed(2)}</p>
+                        <p>Net Interest: ₹${(yearlyInterest - tdsAmount).toFixed(2)}</p>
+                        <p>Year End Amount: ₹${(currentPrincipal + yearlyInterest - tdsAmount).toFixed(2)}</p>
                     </div>
                 `;
+
+                // Update principal for next year's calculation
+                currentPrincipal += yearlyInterest - tdsAmount;
             }
 
-            const totalAmount = principal + totalInterest;
+            const totalAmount = currentPrincipal;
 
             document.getElementById('yearlyDetails').innerHTML = yearlyDetailsHTML;
             document.getElementById('totalSummary').innerHTML = `
