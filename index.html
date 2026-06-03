@@ -26,7 +26,6 @@
             background: rgb(var(--brand-color));
             cursor: pointer; border-radius: 50%; border: 3px solid white;
         }
-        /* FIXED: Narrower width to remove extra space */
         .theme-expanded { width: 220px !important; }
         .dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
@@ -44,7 +43,7 @@
             </div>
 
             <div class="flex items-center gap-2 sm:gap-3">
-                <!-- THEME SELECTOR - FIXED SPACING -->
+                <!-- THEME SELECTOR -->
                 <div id="themeContainer" class="relative flex items-center bg-slate-100 dark:bg-slate-800 rounded-full p-1 transition-all duration-500 overflow-hidden w-10 h-10 cursor-pointer" onclick="toggleThemePanel(event)">
                     <div class="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-white shrink-0 shadow-sm">
                         <i data-lucide="palette" class="w-4 h-4"></i>
@@ -71,32 +70,36 @@
             
             <!-- LEFT: INPUTS -->
             <div class="lg:col-span-7 space-y-5">
+                <!-- Principal -->
                 <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex justify-between items-end mb-4">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Investment</label>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Investment Amount</label>
                         <div class="text-xl font-black text-brand">₹<input type="number" id="pIn" value="500000" class="w-28 bg-transparent text-right outline-none"></div>
                     </div>
                     <input type="range" id="pSlider" min="10000" max="10000000" step="10000" value="500000" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none slider-thumb">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Rate -->
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-4">Interest Rate</label>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase block mb-4">Interest Rate (% p.a.)</label>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xl font-black text-brand"><input type="number" id="rIn" value="7.5" step="0.1" class="w-14 bg-transparent outline-none">%</span>
                         </div>
                         <input type="range" id="rSlider" min="1" max="15" step="0.1" value="7.5" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none slider-thumb">
                     </div>
 
+                    <!-- Mode -->
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <label class="text-[10px] font-bold text-slate-400 uppercase block mb-3">Tenure Selection</label>
                         <div class="flex p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
-                            <button onclick="setMode('period')" id="mP" class="flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 shadow-sm text-brand font-bold text-xs uppercase tracking-tight">Duration</button>
-                            <button onclick="setMode('dates')" id="mD" class="flex-1 py-1.5 rounded-lg text-slate-500 font-medium text-xs uppercase tracking-tight">Dates</button>
+                            <button onclick="setMode('period')" id="mP" class="flex-1 py-1.5 rounded-lg bg-white dark:bg-slate-800 shadow-sm text-brand font-bold text-xs uppercase">Duration</button>
+                            <button onclick="setMode('dates')" id="mD" class="flex-1 py-1.5 rounded-lg text-slate-500 font-medium text-xs uppercase">Dates</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Tenure Period Inputs -->
                 <div id="uiP" class="grid grid-cols-3 gap-3">
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
                         <span class="text-[9px] text-slate-400 font-bold uppercase">Years</span>
@@ -123,21 +126,28 @@
                     </div>
                 </div>
 
+                <!-- SETTINGS & LOGIC -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- Senior Citizen (Includes logic to change TDS limit) -->
                     <div class="flex items-center justify-between p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
                         <div class="flex flex-col"><span class="text-xs font-bold">Senior Citizen</span><span class="text-[9px] text-slate-400">+0.5% Rate</span></div>
                         <input type="checkbox" id="isSen" class="w-5 h-5 accent-brand cursor-pointer">
                     </div>
+
+                    <!-- PAN Check -->
                     <div class="flex items-center justify-between p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
                         <div class="flex flex-col"><span class="text-xs font-bold">PAN Linked</span><span id="panSubtext" class="text-[9px] text-slate-400 tracking-tight">10% TDS</span></div>
                         <input type="checkbox" id="isPan" checked class="w-5 h-5 accent-brand cursor-pointer">
                     </div>
+
+                    <!-- TDS Limit Box (Editable) -->
                     <div id="tdsLimitBox" class="flex flex-col p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
                         <span class="text-[9px] text-slate-400 font-bold uppercase">TDS Limit (Yearly)</span>
-                        <input type="number" id="tdsExempt" value="40000" class="bg-transparent font-bold text-sm outline-none mt-1">
+                        <input type="number" id="tdsExempt" value="50000" class="bg-transparent font-bold text-sm outline-none mt-1">
                     </div>
                 </div>
 
+                <!-- No PAN Warning -->
                 <div id="panWarning" class="hidden p-4 bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-900 rounded-2xl text-rose-600 dark:text-rose-400 text-[11px] flex items-center gap-3">
                     <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
                     <p><b>Notice:</b> Without PAN, 20% TDS applies to all interest (Exemption Limit disabled).</p>
@@ -146,18 +156,18 @@
 
             <!-- RIGHT: RESULTS -->
             <div class="lg:col-span-5 space-y-5">
-                <div class="bg-brand rounded-[2rem] p-6 text-white shadow-xl shadow-brand/20 relative overflow-hidden">
+                <div class="bg-brand rounded-[2rem] p-6 text-white shadow-xl shadow-brand/20 relative overflow-hidden transition-colors">
                     <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <h3 class="text-white/70 font-medium text-[11px] uppercase tracking-widest mb-1">Maturity Value</h3>
                     <div class="text-[10vw] sm:text-4xl font-black mb-6 leading-none break-words" id="resMat">₹0</div>
                     
                     <div class="grid grid-cols-2 gap-3">
                         <div class="bg-black/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
-                            <p class="text-white/60 text-[9px] font-bold uppercase mb-1">Profit</p>
+                            <p class="text-white/60 text-[9px] font-bold uppercase mb-1">Net Profit</p>
                             <p class="text-md font-bold" id="resInt">₹0</p>
                         </div>
                         <div class="bg-black/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
-                            <p class="text-white/60 text-[9px] font-bold uppercase mb-1">Tax</p>
+                            <p class="text-white/60 text-[9px] font-bold uppercase mb-1">Total Tax</p>
                             <p class="text-md font-bold text-rose-200" id="resTds">₹0</p>
                         </div>
                     </div>
@@ -167,7 +177,7 @@
                     <div class="flex justify-between items-center mb-5">
                         <h3 class="font-bold text-sm">Yield Chart</h3>
                         <button onclick="toggleBreakdown()" class="text-[9px] font-black text-brand uppercase bg-brand/10 px-3 py-1.5 rounded-full hover:bg-brand/20 transition-all">
-                            Details <i data-lucide="chevron-down" class="inline w-3 h-3"></i>
+                            Breakdown <i data-lucide="chevron-down" class="inline w-3 h-3"></i>
                         </button>
                     </div>
                     <div class="h-40 flex justify-center"><canvas id="mainChart"></canvas></div>
@@ -177,8 +187,8 @@
 
         <!-- Yearly Breakdown -->
         <div id="breakdownSection" class="hidden mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 class="text-lg font-bold px-2 mb-4">Yearly Projection</h2>
-            <div id="breakdownGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <h2 class="text-lg font-bold px-2 mb-4">Detailed Annual Projection</h2>
+            <div id="breakdownGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-20"></div>
         </div>
     </main>
 
@@ -186,6 +196,7 @@
         let mode = 'period', chart, accent = '14 165 233';
         lucide.createIcons();
 
+        // Theme panel logic
         function toggleThemePanel(e) { 
             e.stopPropagation(); 
             const container = document.getElementById('themeContainer');
@@ -224,17 +235,31 @@
         function toggleBreakdown() { document.getElementById('breakdownSection').classList.toggle('hidden'); }
         const fmt = (v) => "₹" + Math.round(v).toLocaleString('en-IN');
 
+        // SPECIAL LOGIC: Senior Citizen checkbox updates TDS limit input
+        document.getElementById('isSen').addEventListener('change', function() {
+            const limitInput = document.getElementById('tdsExempt');
+            if (this.checked) {
+                limitInput.value = 100000; // Change to 1 Lakh
+            } else {
+                limitInput.value = 50000;  // Change to 50k
+            }
+            calculate();
+        });
+
         function calculate() {
             const P = parseFloat(document.getElementById('pIn').value) || 0;
             let R = parseFloat(document.getElementById('rIn').value) || 0;
-            if(document.getElementById('isSen').checked) R += 0.5;
+            const isSen = document.getElementById('isSen').checked;
+            if(isSen) R += 0.5;
+            
             const isPan = document.getElementById('isPan').checked;
             const customLimit = parseFloat(document.getElementById('tdsExempt').value) || 0;
 
+            // Update UI helpers for PAN
             if(!isPan) {
                 document.getElementById('tdsLimitBox').classList.add('opacity-40', 'pointer-events-none');
                 document.getElementById('panWarning').classList.remove('hidden');
-                document.getElementById('panSubtext').innerText = "20% TDS (Penalty)";
+                document.getElementById('panSubtext').innerText = "20% TDS (Flat)";
                 document.getElementById('panSubtext').classList.add('text-rose-500');
             } else {
                 document.getElementById('tdsLimitBox').classList.remove('opacity-40', 'pointer-events-none');
@@ -258,15 +283,17 @@
                 let yearFrac = (totalYears - (i-1) > 1) ? 1 : (totalYears - (i-1));
                 let yearEndAmt = currentP * Math.pow((1 + r_dec/4), (4 * yearFrac));
                 let yearInt = yearEndAmt - currentP;
+                
+                // TDS Logic: If PAN exists, apply exempt limit. If no PAN, 20% on all.
                 let yearTds = isPan ? (yearInt > customLimit ? yearInt * 0.1 : 0) : (yearInt * 0.2);
                 
                 html += `
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm border-l-4" style="border-left-color: rgb(${accent})">
-                    <div class="flex justify-between mb-3"><span class="font-black text-[10px] opacity-40">YEAR ${i}</span><span class="text-[9px] text-brand font-bold bg-brand/10 px-2 py-0.5 rounded">${(yearFrac*100).toFixed(0)}% Cycle</span></div>
-                    <div class="space-y-1.5 text-[11px]">
-                        <div class="flex justify-between"><span>Principal</span><span class="font-bold">${fmt(currentP)}</span></div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm border-l-4 transition-all" style="border-left-color: rgb(${accent})">
+                    <div class="flex justify-between mb-3"><span class="font-black text-[10px] opacity-40 uppercase tracking-tighter">Year ${i}</span><span class="text-[9px] text-brand font-bold bg-brand/10 px-2 py-0.5 rounded">${(yearFrac*100).toFixed(0)}% Cycle</span></div>
+                    <div class="space-y-1 text-[11px]">
+                        <div class="flex justify-between text-slate-500"><span>Opening</span><span class="font-bold">${fmt(currentP)}</span></div>
                         <div class="flex justify-between text-emerald-500"><span>Interest</span><span class="font-bold">+ ${fmt(yearInt)}</span></div>
-                        <div class="flex justify-between text-rose-500"><span>Tax</span><span class="font-bold">- ${fmt(yearTds)}</span></div>
+                        <div class="flex justify-between text-rose-500"><span>Tax (TDS)</span><span class="font-bold">- ${fmt(yearTds)}</span></div>
                         <div class="pt-2 mt-1 border-t border-slate-100 dark:border-slate-700 flex justify-between text-[13px] font-black"><span>End Bal</span><span>${fmt(yearEndAmt - yearTds)}</span></div>
                     </div>
                 </div>`;
@@ -298,13 +325,20 @@
             }
         }
 
+        // Setup Sliders
         const setupSync = (sId, iId) => {
             const s = document.getElementById(sId), i = document.getElementById(iId);
             s.oninput = () => { i.value = s.value; calculate(); };
             i.oninput = () => { s.value = i.value; calculate(); };
         };
         setupSync('pSlider', 'pIn'); setupSync('rSlider', 'rIn');
-        ['tY', 'tM', 'tD', 'dS', 'dE', 'isSen', 'isPan', 'tdsExempt'].forEach(id => { document.getElementById(id).oninput = calculate; });
+
+        // Watch all inputs
+        ['tY', 'tM', 'tD', 'dS', 'dE', 'isPan', 'tdsExempt'].forEach(id => { 
+            document.getElementById(id).oninput = calculate; 
+        });
+
+        // Initial Calc
         calculate();
     </script>
 </body>
